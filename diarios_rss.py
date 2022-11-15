@@ -69,8 +69,5 @@ diarios={0:{'diario':'Telam',
     'rss': 'http://www.laizquierdadiario.com/spip.php?page=backend_portada' },
     23 : {'diario':'Prensa Libre',
     'seccion':'ultimas_noticias',
-    'rss': 'https://www.prensalibre.com/feed/#'},
-    24 : {'diario':'Minuto_ar',
-    'seccion':'ultimas_noticias',
-    'rss': 'https://www.minutoar.com.ar/rss/un_foto.html' } 
+    'rss': 'https://www.prensalibre.com/feed/#'}
 }
