@@ -66,8 +66,11 @@ diarios={0:{'diario':'Telam',
     'rss': 'http://www.laizquierdadiario.com/spip.php?page=backend&id_mot=13' }  ,
     22 : {'diario':'La_izquierda_diario',
     'seccion':'ultimas_noticias',
-    'rss': 'http://www.laizquierdadiario.com/spip.php?page=backend_portada' },         
-    23 : {'diario':'Minuto_ar',
+    'rss': 'http://www.laizquierdadiario.com/spip.php?page=backend_portada' },
+    23 : {'diario':'Prensa Libre',
+    'seccion':'Todas',
+    'rss': 'https://www.prensalibre.com/feed/#'},
+    24 : {'diario':'Minuto_ar',
     'seccion':'ultimas_noticias',
     'rss': 'https://www.minutoar.com.ar/rss/un_foto.html' } 
 }
