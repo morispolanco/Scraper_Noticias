@@ -4,4 +4,4 @@ requests
 torch
 transformers
 matplotlib
-
+vadersentiment
