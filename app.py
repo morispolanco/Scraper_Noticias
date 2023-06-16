@@ -3,6 +3,7 @@ from textblob import TextBlob
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
+import matplotlib.pyplot as plt
 
 # Función para extraer los artículos de las fuentes de noticias
 def extract_articles(url):
@@ -37,9 +38,6 @@ def get_article_date(article):
 xataka_url = 'https://www.xataka.com/'
 gizmodo_url = 'https://es.gizmodo.com/'
 
-# Obtener la fecha actual
-current_date = datetime.now().date()
-
 # Obtener los artículos de Xataka
 xataka_articles = extract_articles(xataka_url)
 
@@ -49,7 +47,14 @@ gizmodo_articles = extract_articles(gizmodo_url)
 # Configuración de la aplicación de Streamlit
 st.title('Análisis de Sentimientos de Marcas de Tecnología')
 search_query = st.text_input('Ingresa el nombre de un producto o una marca:')
-st.subheader('Xataka')
+start_date = st.date_input('Fecha de inicio')
+end_date = st.date_input('Fecha de fin')
+
+# Listas para almacenar los sentimientos
+sentiments = []
+labels = ['Positivo', 'Neutral', 'Negativo']
+values = [0, 0, 0]
+
 for article in xataka_articles:
     title_element = article.find('h2')
     if title_element:
@@ -58,14 +63,10 @@ for article in xataka_articles:
         if content_element:
             content = content_element.text.strip()
             article_date = get_article_date(article)
-            if article_date and article_date == current_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+            if article_date and start_date <= article_date <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
                 sentiment = analyze_sentiment(content)
-                st.write(f'Título: {title}')
-                st.write(f'Contenido: {content}')
-                st.write(f'Sentimiento: {sentiment}')
-                st.write('---')
+                sentiments.append(sentiment)
 
-st.subheader('Gizmodo')
 for article in gizmodo_articles:
     title_element = article.find('h2')
     if title_element:
@@ -74,9 +75,24 @@ for article in gizmodo_articles:
         if content_element:
             content = content_element.text.strip()
             article_date = get_article_date(article)
-            if article_date and article_date == current_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+            if article_date and start_date <= article_date <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
                 sentiment = analyze_sentiment(content)
-                st.write(f'Título: {title}')
-                st.write(f'Contenido: {content}')
-                st.write(f'Sentimiento: {sentiment}')
-                st.write('---')
+                sentiments.append(sentiment)
+
+# Contar los sentimientos
+for sentiment in sentiments:
+    if sentiment == 'Positivo':
+        values[0] += 1
+    elif sentiment == 'Neutral':
+        values[1] += 1
+    elif sentiment == 'Negativo':
+        values[2] += 1
+
+# Crear gráfico de pie
+fig, ax = plt.subplots()
+ax.pie(values, labels=labels, autopct='%1.1f%%')
+ax.axis('equal')
+ax.set_title('Sentimientos hacia la marca')
+
+# Mostrar gráfico en Streamlit
+st.pyplot(fig)
