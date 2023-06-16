@@ -44,9 +44,9 @@ with st.sidebar:
     start_date = st.date_input('Fecha de Inicio')
     end_date = st.date_input('Fecha de Fin')
 
-    # Convertir las fechas de inicio y fin a objetos datetime
-    start_date = datetime.combine(start_date, datetime.min.time())
-    end_date = datetime.combine(end_date, datetime.max.time())
+    # Convertir las fechas de inicio y fin a objetos de tipo date
+    start_date = start_date.toordinal()
+    end_date = end_date.toordinal()
 
 # Obtener los artículos de las fuentes de noticias
 xataka_articles = extract_articles(xataka_url)
@@ -69,7 +69,7 @@ for article in xataka_articles:
         if content_element:
             content = content_element.text.strip()
             article_date = get_article_date(article)
-            if article_date and start_date <= article_date <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+            if article_date and start_date <= article_date.toordinal() <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
                 sentiment = analyze_sentiment(content)
                 sentiments.append(sentiment)
 
@@ -82,7 +82,7 @@ for article in gizmodo_articles:
         if content_element:
             content = content_element.text.strip()
             article_date = get_article_date(article)
-            if article_date and start_date <= article_date <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+            if article_date and start_date <= article_date.toordinal() <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
                 sentiment = analyze_sentiment(content)
                 sentiments.append(sentiment)
 
@@ -95,7 +95,7 @@ for article in theverge_articles:
         if content_element:
             content = content_element.text.strip()
             article_date = get_article_date(article)
-            if article_date and start_date <= article_date <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+            if article_date and start_date <= article_date.toordinal() <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
                 sentiment = analyze_sentiment(content)
                 sentiments.append(sentiment)
 
@@ -108,7 +108,7 @@ for article in engadget_articles:
         if content_element:
             content = content_element.text.strip()
             article_date = get_article_date(article)
-            if article_date and start_date <= article_date <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+            if article_date and start_date <= article_date.toordinal() <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
                 sentiment = analyze_sentiment(content)
                 sentiments.append(sentiment)
 
@@ -121,7 +121,7 @@ for article in digitaltrends_articles:
         if content_element:
             content = content_element.text.strip()
             article_date = get_article_date(article)
-            if article_date and start_date <= article_date <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+            if article_date and start_date <= article_date.toordinal() <= end_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
                 sentiment = analyze_sentiment(content)
                 sentiments.append(sentiment)
 
