@@ -33,22 +33,29 @@ gizmodo_articles = extract_articles(gizmodo_url)
 
 # Configuración de la aplicación de Streamlit
 st.title('Análisis de Sentimientos de Marcas de Tecnología')
+search_query = st.text_input('Ingresa el nombre de un producto o una marca:')
 st.subheader('Xataka')
 for article in xataka_articles:
     title = article.find('h2').text.strip()
-    content = article.find('p').text.strip()
-    sentiment = analyze_sentiment(content)
-    st.write(f'Título: {title}')
-    st.write(f'Contenido: {content}')
-    st.write(f'Sentimiento: {sentiment}')
-    st.write('---')
+    content_element = article.find('p')
+    if content_element:
+        content = content_element.text.strip()
+        if search_query.lower() in title.lower() or search_query.lower() in content.lower():
+            sentiment = analyze_sentiment(content)
+            st.write(f'Título: {title}')
+            st.write(f'Contenido: {content}')
+            st.write(f'Sentimiento: {sentiment}')
+            st.write('---')
 
 st.subheader('Gizmodo')
 for article in gizmodo_articles:
     title = article.find('h2').text.strip()
-    content = article.find('p').text.strip()
-    sentiment = analyze_sentiment(content)
-    st.write(f'Título: {title}')
-    st.write(f'Contenido: {content}')
-    st.write(f'Sentimiento: {sentiment}')
-    st.write('---')
+    content_element = article.find('p')
+    if content_element:
+        content = content_element.text.strip()
+        if search_query.lower() in title.lower() or search_query.lower() in content.lower():
+            sentiment = analyze_sentiment(content)
+            st.write(f'Título: {title}')
+            st.write(f'Contenido: {content}')
+            st.write(f'Sentimiento: {sentiment}')
+            st.write('---')
