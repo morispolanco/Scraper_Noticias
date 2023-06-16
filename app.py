@@ -2,6 +2,7 @@ import streamlit as st
 from textblob import TextBlob
 import requests
 from bs4 import BeautifulSoup
+from datetime import datetime
 
 # Función para extraer los artículos de las fuentes de noticias
 def extract_articles(url):
@@ -21,9 +22,22 @@ def analyze_sentiment(text):
     else:
         return 'Neutral'
 
+# Función para obtener la fecha de publicación de un artículo
+def get_article_date(article):
+    date_element = article.find('time')
+    if date_element:
+        date_string = date_element['datetime']
+        article_date = datetime.strptime(date_string, '%Y-%m-%d')
+        return article_date.date()
+    else:
+        return None
+
 # URL de las fuentes de noticias
 xataka_url = 'https://www.xataka.com/'
 gizmodo_url = 'https://es.gizmodo.com/'
+
+# Obtener la fecha actual
+current_date = datetime.now().date()
 
 # Obtener los artículos de Xataka
 xataka_articles = extract_articles(xataka_url)
@@ -36,26 +50,32 @@ st.title('Análisis de Sentimientos de Marcas de Tecnología')
 search_query = st.text_input('Ingresa el nombre de un producto o una marca:')
 st.subheader('Xataka')
 for article in xataka_articles:
-    title = article.find('h2').text.strip()
-    content_element = article.find('p')
-    if content_element:
-        content = content_element.text.strip()
-        if search_query.lower() in title.lower() or search_query.lower() in content.lower():
-            sentiment = analyze_sentiment(content)
-            st.write(f'Título: {title}')
-            st.write(f'Contenido: {content}')
-            st.write(f'Sentimiento: {sentiment}')
-            st.write('---')
+    title_element = article.find('h2')
+    if title_element:
+        title = title_element.text.strip()
+        content_element = article.find('p')
+        if content_element:
+            content = content_element.text.strip()
+            article_date = get_article_date(article)
+            if article_date and article_date == current_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+                sentiment = analyze_sentiment(content)
+                st.write(f'Título: {title}')
+                st.write(f'Contenido: {content}')
+                st.write(f'Sentimiento: {sentiment}')
+                st.write('---')
 
 st.subheader('Gizmodo')
 for article in gizmodo_articles:
-    title = article.find('h2').text.strip()
-    content_element = article.find('p')
-    if content_element:
-        content = content_element.text.strip()
-        if search_query.lower() in title.lower() or search_query.lower() in content.lower():
-            sentiment = analyze_sentiment(content)
-            st.write(f'Título: {title}')
-            st.write(f'Contenido: {content}')
-            st.write(f'Sentimiento: {sentiment}')
-            st.write('---')
+    title_element = article.find('h2')
+    if title_element:
+        title = title_element.text.strip()
+        content_element = article.find('p')
+        if content_element:
+            content = content_element.text.strip()
+            article_date = get_article_date(article)
+            if article_date and article_date == current_date and (search_query.lower() in title.lower() or search_query.lower() in content.lower()):
+                sentiment = analyze_sentiment(content)
+                st.write(f'Título: {title}')
+                st.write(f'Contenido: {content}')
+                st.write(f'Sentimiento: {sentiment}')
+                st.write('---')
