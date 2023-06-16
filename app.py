@@ -2,8 +2,7 @@ import streamlit as st
 from datetime import date
 from bs4 import BeautifulSoup
 import requests
-import torch
-from transformers import BertTokenizer, BertForSequenceClassification
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import matplotlib.pyplot as plt
 
 # Función para extraer los artículos de una fuente de noticias
@@ -17,18 +16,17 @@ def extract_articles(source_url):
 def get_current_date():
     return date.today()
 
-# Función para analizar el sentimiento de un texto utilizando BERT
+# Función para analizar el sentimiento de un texto utilizando VADER
 def analyze_sentiment(text):
-    tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
-    model = BertForSequenceClassification.from_pretrained('bert-base-multilingual-cased', num_labels=3)
-    model.load_state_dict(torch.load('sentiment_model.pth', map_location=torch.device('cpu')))
-    encoded_input = tokenizer.encode_plus(text, add_special_tokens=True, padding=True, truncation=True, return_tensors='pt')
-    with torch.no_grad():
-        logits = model(encoded_input['input_ids'], token_type_ids=encoded_input['token_type_ids'])[0]
-        probabilities = torch.softmax(logits, dim=1).tolist()[0]
-    sentiment_labels = ['Positivo', 'Neutral', 'Negativo']
-    sentiment_index = probabilities.index(max(probabilities))
-    sentiment = sentiment_labels[sentiment_index]
+    analyzer = SentimentIntensityAnalyzer()
+    sentiment_scores = analyzer.polarity_scores(text)
+    compound_score = sentiment_scores['compound']
+    if compound_score >= 0.05:
+        sentiment = 'Positivo'
+    elif compound_score <= -0.05:
+        sentiment = 'Negativo'
+    else:
+        sentiment = 'Neutral'
     return sentiment
 
 # Obtener artículos de las fuentes de noticias
@@ -79,4 +77,4 @@ for sentiment in sentiments:
 fig, ax = plt.subplots()
 ax.pie(values, labels=labels, autopct='%1.1f%%')
 ax.axis('equal')
-st.pyplot
+st.pyplot(fig)
