@@ -2,6 +2,8 @@ import streamlit as st
 from datetime import date
 from bs4 import BeautifulSoup
 import requests
+import torch
+from transformers import BertTokenizer, BertForSequenceClassification
 import matplotlib.pyplot as plt
 
 # Función para extraer los artículos de una fuente de noticias
@@ -14,6 +16,20 @@ def extract_articles(source_url):
 # Función para obtener la fecha actual
 def get_current_date():
     return date.today()
+
+# Función para analizar el sentimiento de un texto utilizando BERT
+def analyze_sentiment(text):
+    tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
+    model = BertForSequenceClassification.from_pretrained('bert-base-multilingual-cased', num_labels=3)
+    model.load_state_dict(torch.load('sentiment_model.pth', map_location=torch.device('cpu')))
+    encoded_input = tokenizer.encode_plus(text, add_special_tokens=True, padding=True, truncation=True, return_tensors='pt')
+    with torch.no_grad():
+        logits = model(encoded_input['input_ids'], token_type_ids=encoded_input['token_type_ids'])[0]
+        probabilities = torch.softmax(logits, dim=1).tolist()[0]
+    sentiment_labels = ['Positivo', 'Neutral', 'Negativo']
+    sentiment_index = probabilities.index(max(probabilities))
+    sentiment = sentiment_labels[sentiment_index]
+    return sentiment
 
 # Obtener artículos de las fuentes de noticias
 xataka_articles = extract_articles('https://www.xataka.com/')
@@ -63,4 +79,4 @@ for sentiment in sentiments:
 fig, ax = plt.subplots()
 ax.pie(values, labels=labels, autopct='%1.1f%%')
 ax.axis('equal')
-st.pyplot(fig)
+st.pyplot
