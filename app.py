@@ -1,5 +1,5 @@
 import streamlit as st
-from datetime import datetime
+from datetime import datetime, date
 from bs4 import BeautifulSoup
 import requests
 import matplotlib.pyplot as plt
@@ -17,7 +17,7 @@ def get_article_date(article):
     if date_element and date_element.has_attr('datetime'):
         date_string = date_element['datetime']
         article_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
-        return article_date
+        return article_date.date()
     return None
 
 # Función para realizar el análisis de sentimientos
@@ -43,6 +43,10 @@ with st.sidebar:
     search_query = st.text_input('Producto o Marca')
     start_date = st.date_input('Fecha de Inicio')
     end_date = st.date_input('Fecha de Fin')
+
+    # Convertir las fechas de inicio y fin a objetos datetime
+    start_date = datetime.combine(start_date, datetime.min.time())
+    end_date = datetime.combine(end_date, datetime.max.time())
 
 # Obtener los artículos de las fuentes de noticias
 xataka_articles = extract_articles(xataka_url)
