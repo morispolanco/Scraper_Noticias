@@ -1,4 +1,7 @@
-streamlit 
-textblob 
-requests 
+streamlit
 beautifulsoup4
+requests
+torch
+transformers
+matplotlib
+
