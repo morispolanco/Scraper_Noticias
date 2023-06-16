@@ -16,9 +16,16 @@ def get_article_date(article):
     date_element = article.find('time')
     if date_element and date_element.has_attr('datetime'):
         date_string = date_element['datetime']
-        article_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
+        try:
+            article_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
+        except ValueError:
+            article_date = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
         return article_date.date()
     return None
+
+# Resto del código ...
+
+
 
 # Función para realizar el análisis de sentimientos
 def analyze_sentiment(text):
