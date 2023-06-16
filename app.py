@@ -27,8 +27,9 @@ def get_article_date(article):
     date_element = article.find('time')
     if date_element:
         date_string = date_element['datetime']
-        article_date = datetime.strptime(date_string, '%Y-%m-%d')
-        return article_date.date()
+        date_string = date_string.split('T')[0]
+        article_date = datetime.strptime(date_string, '%Y-%m-%d').date()
+        return article_date
     else:
         return None
 
